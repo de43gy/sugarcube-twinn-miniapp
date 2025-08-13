@@ -1,0 +1,12 @@
+{
+  "name": "sugarcube-twinn-miniapp",
+  "version": "1.0.0",
+  "description": "A Telegram Mini App using SugarCube 2 and Twine",
+  "main": "index.html",
+  "scripts": {
+    "build": "mkdir -p build && cp index.html build/index.html"
+  },
+  "keywords": [],
+  "author": "Your Name",
+  "license": "ISC"
+}

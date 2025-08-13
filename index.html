@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Призрак в поместье</title>
+    <!-- Tailwind CSS  -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1a202c;
+            color: #e2e8f0;
+        }
+        .passage {
+            animation: fadeIn 1s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        #story-display {
+            min-height: 100vh;
+        }
+        #sidebar {
+            display: none; /* SugarCube sidebar */
+        }
+        .passage a {
+            color: #63b3ed;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+        .passage a:hover {
+            color: #90cdf4;
+            text-decoration: underline;
+        }
+        .button {
+            display: inline-block;
+            background-color: #2d3748;
+            color: #e2e8f0;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .button:hover {
+            background-color: #4a5568;
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-8 md:p-12">
+    <!-- main container -->
+    <div id="story-display" class="max-w-3xl mx-auto bg-gray-800 p-6 md:p-8 rounded-xl shadow-2xl flex flex-col justify-center">
+        <h1 class="text-4xl font-bold mb-6 text-center text-gray-100">Таинственное поместье</h1>
+        
+        <div id="passages" class="space-y-6">
+            <!-- SugarCube story -->
+        </div>
+
+        <!-- resurses and inventory -->
+        <div id="game-ui" class="mt-8 p-4 bg-gray-900 rounded-lg shadow-inner">
+            <h2 class="text-xl font-bold mb-2">Инвентарь</h2>
+            <div id="inventory-list" class="flex flex-wrap gap-2 text-sm text-gray-300">
+                <!-- items -->
+            </div>
+            <h2 class="text-xl font-bold mt-4 mb-2">Локация</h2>
+            <div id="location-display" class="text-sm text-gray-400">
+                <!-- location -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Telegram Web App SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+    <!-- SugarCube 2 -->
+    <script src="https://unpkg.com/sugarcube-2@2.36.1/dist/sugarcube-2.min.js"></script>
+
+    <!--
+        Twine Story Data - The engine will find this automatically.
+    -->
+    <script type="text/twine-story">
+        <tw-storydata name="Таинственное поместье" startnode="Начало" creator="Twine" creator-version="2.3.16" ifid="12345678-ABCD-EFGH-IJKL-9876543210AB" format="SugarCube" format-version="2.36.1" options="" tags="">
+            
+            <!-- First game settings -->
+            <tw-passagedata pid="1" name="Начало" tags="nobr" position="50,100">
+                <<set $player to { name: "Игрок", inventory: [] }>>
+                <<set $currentLocation to "Вход в поместье">>
+                <<set $hasKey to false>>
+                <<set $hasJournal to false>>
+                <p class="text-lg">Ты стоишь перед воротами старого поместья, окутанного туманом. Давно ходили слухи, что здесь обитает призрак. Твоя цель — найти ключ и разгадать тайну, чтобы освободить его.</p>
+                <p class="mt-4">Ты заходишь в поместье. Вокруг темно и тихо.</p>
+                <p class="mt-4">[[Идти в библиотеку->Библиотека]]</p>
+                <p class="mt-2">[[Идти в столовую->Столовая]]</p>
+            </tw-passagedata>
+            
+            <!-- location: Library -->
+            <tw-passagedata pid="2" name="Библиотека" tags="nobr" position="250,100">
+                <<set $currentLocation to "Библиотека">>
+                <p class="text-lg">Ты находишься в старой, пыльной библиотеке. Полки завалены книгами, а в центре комнаты стоит большой стол.</p>
+                
+                <<if $hasKey>>
+                    <p class="mt-4 text-green-400">У тебя уже есть ключ. Возможно, стоит поискать что-то ещё?</p>
+                <<else>>
+                    <p class="mt-4">Ты замечаешь, что одна из книг лежит не на своём месте.</p>
+                    <p class="mt-2">[[Взять книгу->Найти ключ]]</p>
+                <<endif>>
+                
+                <p class="mt-4">[[Вернуться в холл->Начало]]</p>
+            </tw-passagedata>
+
+            <!-- location: ding room -->
+            <tw-passagedata pid="3" name="Столовая" tags="nobr" position="450,100">
+                <<set $currentLocation to "Столовая">>
+                <p class="text-lg">Ты входишь в столовую. На длинном столе — запылённая посуда и потускневшие столовые приборы.</p>
+                
+                <<if $hasJournal>>
+                    <p class="mt-4 text-green-400">Ты уже нашел дневник.</p>
+                <<else>>
+                    <p class="mt-4">Под скатертью ты нащупал что-то твердое. Похоже, это старый дневник!</p>
+                    <p class="mt-2">[[Взять дневник->Найти дневник]]</p>
+                <<endif>>
+                
+                <p class="mt-4">[[Вернуться в холл->Начало]]</p>
+            </tw-passagedata>
+
+            <!-- Event: Find the key -->
+            <tw-passagedata pid="4" name="Найти ключ" tags="nobr" position="250,200">
+                <<set $hasKey to true>>
+                <<set $player.inventory.push("Старый ключ")>>
+                <p class="text-lg">Ты открываешь книгу, и из неё выпадает старый, потемневший ключ. Теперь он в твоём инвентаре!</p>
+                <p class="mt-4">[[Вернуться в библиотеку->Библиотека]]</p>
+            </tw-passagedata>
+
+            <!-- Event: Find dairy -->
+            <tw-passagedata pid="5" name="Найти дневник" tags="nobr" position="450,200">
+                <<set $hasJournal to true>>
+                <<set $player.inventory.push("Дневник призрака")>>
+                <p class="text-lg">Ты находишь дневник, который, кажется, принадлежал призраку. Теперь ты можешь узнать его историю.</p>
+                <p class="mt-4">[[Вернуться в столовую->Столовая]]</p>
+            </tw-passagedata>
+
+            <!-- JS for UI update -->
+            <tw-passagedata pid="6" name="Script" tags="script" position="650,100">
+                <<script>>
+                    // hooks to update inventory and location display
+                    State.hooks.onNavigate.add(function (passage) {
+                        if (passage.tags.includes('nobr')) {
+                            // update inventory and location display
+                            const inventoryList = document.getElementById('inventory-list');
+                            inventoryList.innerHTML = '';
+                            if ($player.inventory.length === 0) {
+                                inventoryList.innerHTML = '<span class="italic text-gray-500">Пусто</span>';
+                            } else {
+                                $player.inventory.forEach(item => {
+                                    const itemSpan = document.createElement('span');
+                                    itemSpan.className = 'bg-gray-700 text-gray-200 px-2 py-1 rounded-full text-xs font-semibold';
+                                    itemSpan.textContent = item;
+                                    inventoryList.appendChild(itemSpan);
+                                });
+                            }
+
+                            // update current location
+                            const locationDisplay = document.getElementById('location-display');
+                            locationDisplay.textContent = $currentLocation;
+                        }
+                    });
+                <</script>>
+            </tw-passagedata>
+
+        </tw-storydata>
+    </script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.Telegram) {
+                const tg = window.Telegram.WebApp;
+                tg.ready();
+                tg.expand();
+                console.log('Telegram Web App SDK is ready!');
+            } else {
+                console.error('Telegram Web App SDK not found!');
+            }
+        });
+    </script>
+</body>
+</html>
