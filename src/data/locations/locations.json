@@ -39,7 +39,7 @@
         "description": "Ты замечаешь, что одна из книг лежит не на своём месте.",
         "action": "Взять книгу",
         "conditions": [{"type": "not_has_item", "item": "old_key"}],
-        "result": "find_key_event"
+        "result": "Найти ключ"
       }
     ],
     "atmosphere": "dusty",
@@ -64,7 +64,7 @@
         "description": "Под скатертью ты нащупал что-то твердое. Похоже, это старый дневник!",
         "action": "Взять дневник",
         "conditions": [{"type": "not_has_item", "item": "ghost_journal"}],
-        "result": "find_journal_event"
+        "result": "Найти дневник"
       }
     ],
     "atmosphere": "eerie",
