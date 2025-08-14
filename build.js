@@ -7,144 +7,77 @@ async function build() {
         // Ensure build directory exists
         await fs.mkdir('build', { recursive: true });
         
-        // Create a working version by embedding everything in single HTML
+        // Use the exact working HTML from the original index.html
         const html = `<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Призрак в поместье</title>
-    <!-- Tailwind CSS -->
+    <!-- Tailwind CSS  -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
-        
-        :root {
-            --bg-primary: #1a202c;
-            --bg-secondary: #2d3748;
-            --bg-tertiary: #4a5568;
-            --text-primary: #e2e8f0;
-            --text-secondary: #a0aec0;
-            --text-accent: #63b3ed;
-            --text-accent-hover: #90cdf4;
-            --text-success: #68d391;
-        }
-
         body {
             font-family: 'Inter', sans-serif;
-            background-color: var(--bg-primary);
-            color: var(--text-primary);
+            background-color: #1a202c;
+            color: #e2e8f0;
         }
-
-        #story-display {
-            min-height: 100vh;
-        }
-
-        #sidebar {
-            display: none;
-        }
-
         .passage {
             animation: fadeIn 1s ease-in-out;
-            margin-bottom: 1.5rem;
         }
-
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
         }
-
+        #story-display {
+            min-height: 100vh;
+        }
+        #sidebar {
+            display: none; /* SugarCube sidebar */
+        }
         .passage a {
-            color: var(--text-accent);
+            color: #63b3ed;
             text-decoration: none;
             font-weight: 600;
             transition: color 0.3s ease;
         }
-
         .passage a:hover {
-            color: var(--text-accent-hover);
+            color: #90cdf4;
             text-decoration: underline;
         }
-
         .button {
             display: inline-block;
-            background-color: var(--bg-secondary);
-            color: var(--text-primary);
+            background-color: #2d3748;
+            color: #e2e8f0;
             padding: 0.5rem 1rem;
             border-radius: 0.375rem;
             cursor: pointer;
             transition: background-color 0.3s ease;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
-
         .button:hover {
-            background-color: var(--bg-tertiary);
-        }
-
-        #game-ui {
-            margin-top: 2rem;
-            padding: 1rem;
-            background-color: #1a1f29;
-            border-radius: 0.5rem;
-            box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
-        }
-
-        #game-ui h2 {
-            font-size: 1.25rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            color: var(--text-primary);
-        }
-
-        #inventory-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-            margin-bottom: 1rem;
-        }
-
-        #inventory-list .item {
-            background-color: var(--bg-secondary);
-            color: var(--text-primary);
-            padding: 0.25rem 0.5rem;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
-        #location-display {
-            font-size: 0.875rem;
-            color: var(--text-secondary);
+            background-color: #4a5568;
         }
     </style>
 </head>
 <body class="p-4 sm:p-8 md:p-12">
-    <div id="init-screen" style="display:none;">Loading...</div>
-    <div id="ui-overlay" class="ui-close"></div>
-    <div id="ui-dialog" tabindex="0" role="dialog" aria-labelledby="ui-dialog-title">
-        <div id="ui-dialog-titlebar">
-            <h1 id="ui-dialog-title"></h1>
-            <button id="ui-dialog-close" class="ui-close" tabindex="0" aria-label="Close"></button>
-        </div>
-        <div id="ui-dialog-body"></div>
-    </div>
-    
-    <div id="story" role="main" class="max-w-3xl mx-auto bg-gray-800 p-6 md:p-8 rounded-xl shadow-2xl flex flex-col justify-center">
+    <!-- main container -->
+    <div id="story-display" class="max-w-3xl mx-auto bg-gray-800 p-6 md:p-8 rounded-xl shadow-2xl flex flex-col justify-center">
         <h1 class="text-4xl font-bold mb-6 text-center text-gray-100">Таинственное поместье</h1>
         
         <div id="passages" class="space-y-6">
-            <!-- SugarCube story content will appear here -->
+            <!-- SugarCube story -->
         </div>
 
-        <div id="game-ui">
-            <h2>Инвентарь</h2>
-            <div id="inventory-list">
+        <!-- resurses and inventory -->
+        <div id="game-ui" class="mt-8 p-4 bg-gray-900 rounded-lg shadow-inner">
+            <h2 class="text-xl font-bold mb-2">Инвентарь</h2>
+            <div id="inventory-list" class="flex flex-wrap gap-2 text-sm text-gray-300">
                 <!-- items -->
             </div>
-            <h2 style="margin-top: 1rem;">Локация</h2>
-            <div id="location-display">
+            <h2 class="text-xl font-bold mt-4 mb-2">Локация</h2>
+            <div id="location-display" class="text-sm text-gray-400">
                 <!-- location -->
             </div>
         </div>
@@ -156,10 +89,13 @@ async function build() {
     <!-- SugarCube 2 -->
     <script src="https://unpkg.com/sugarcube-2@2.36.1/dist/sugarcube-2.min.js"></script>
 
-    <!-- Twine Story Data -->
+    <!--
+        Twine Story Data - The engine will find this automatically.
+    -->
     <script type="text/twine-story">
         <tw-storydata name="Таинственное поместье" startnode="Начало" creator="Twine" creator-version="2.3.16" ifid="12345678-ABCD-EFGH-IJKL-9876543210AB" format="SugarCube" format-version="2.36.1" options="" tags="">
             
+            <!-- First game settings -->
             <tw-passagedata pid="1" name="Начало" tags="nobr" position="50,100">
                 <<set $player to { name: "Игрок", inventory: [] }>>
                 <<set $currentLocation to "Вход в поместье">>
@@ -171,6 +107,7 @@ async function build() {
                 <p class="mt-2">[[Идти в столовую->Столовая]]</p>
             </tw-passagedata>
             
+            <!-- location: Library -->
             <tw-passagedata pid="2" name="Библиотека" tags="nobr" position="250,100">
                 <<set $currentLocation to "Библиотека">>
                 <p class="text-lg">Ты находишься в старой, пыльной библиотеке. Полки завалены книгами, а в центре комнаты стоит большой стол.</p>
@@ -185,6 +122,7 @@ async function build() {
                 <p class="mt-4">[[Вернуться в холл->Начало]]</p>
             </tw-passagedata>
 
+            <!-- location: ding room -->
             <tw-passagedata pid="3" name="Столовая" tags="nobr" position="450,100">
                 <<set $currentLocation to "Столовая">>
                 <p class="text-lg">Ты входишь в столовую. На длинном столе — запылённая посуда и потускневшие столовые приборы.</p>
@@ -199,6 +137,7 @@ async function build() {
                 <p class="mt-4">[[Вернуться в холл->Начало]]</p>
             </tw-passagedata>
 
+            <!-- Event: Find the key -->
             <tw-passagedata pid="4" name="Найти ключ" tags="nobr" position="250,200">
                 <<set $hasKey to true>>
                 <<set $player.inventory.push("Старый ключ")>>
@@ -206,6 +145,7 @@ async function build() {
                 <p class="mt-4">[[Вернуться в библиотеку->Библиотека]]</p>
             </tw-passagedata>
 
+            <!-- Event: Find dairy -->
             <tw-passagedata pid="5" name="Найти дневник" tags="nobr" position="450,200">
                 <<set $hasJournal to true>>
                 <<set $player.inventory.push("Дневник призрака")>>
@@ -213,10 +153,13 @@ async function build() {
                 <p class="mt-4">[[Вернуться в столовую->Столовая]]</p>
             </tw-passagedata>
 
+            <!-- JS for UI update -->
             <tw-passagedata pid="6" name="Script" tags="script" position="650,100">
                 <<script>>
+                    // hooks to update inventory and location display
                     State.hooks.onNavigate.add(function (passage) {
                         if (passage.tags.includes('nobr')) {
+                            // update inventory and location display
                             const inventoryList = document.getElementById('inventory-list');
                             inventoryList.innerHTML = '';
                             if ($player.inventory.length === 0) {
@@ -224,12 +167,13 @@ async function build() {
                             } else {
                                 $player.inventory.forEach(item => {
                                     const itemSpan = document.createElement('span');
-                                    itemSpan.className = 'item';
+                                    itemSpan.className = 'bg-gray-700 text-gray-200 px-2 py-1 rounded-full text-xs font-semibold';
                                     itemSpan.textContent = item;
                                     inventoryList.appendChild(itemSpan);
                                 });
                             }
 
+                            // update current location
                             const locationDisplay = document.getElementById('location-display');
                             locationDisplay.textContent = $currentLocation;
                         }
@@ -242,28 +186,14 @@ async function build() {
     
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            console.log('DOM loaded');
-            console.log('SugarCube available:', typeof window.SugarCube);
-            console.log('Story data:', document.querySelector('script[type="text/twine-story"]'));
-            
-            if (window.Telegram && window.Telegram.WebApp) {
+            if (window.Telegram) {
                 const tg = window.Telegram.WebApp;
                 tg.ready();
                 tg.expand();
                 console.log('Telegram Web App SDK is ready!');
             } else {
-                console.log('Telegram Web App SDK not found - running in browser mode');
+                console.error('Telegram Web App SDK not found!');
             }
-        });
-        
-        // Force SugarCube to start if it hasn't already
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                if (window.SugarCube && !window.SugarCube.State.started) {
-                    console.log('Manually starting SugarCube...');
-                    window.SugarCube.Engine.start();
-                }
-            }, 1000);
         });
     </script>
 </body>
