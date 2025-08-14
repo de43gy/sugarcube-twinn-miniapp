@@ -15,26 +15,8 @@
     <link rel="stylesheet" href="./styles/components/ui.css">
 </head>
 <body class="p-4 sm:p-8 md:p-12">
-    <!-- Main Container -->
-    <div id="story-display" class="main-container">
-        <h1 class="game-title">Таинственное поместье</h1>
-        
-        <div id="passages" class="passages-container">
-            <!-- SugarCube story content will be rendered here -->
-        </div>
-
-        <!-- Game UI -->
-        <div id="game-ui">
-            <h2>Инвентарь</h2>
-            <div id="inventory-list">
-                <!-- Inventory items will be populated by JavaScript -->
-            </div>
-            <h2 style="margin-top: 1rem;">Локация</h2>
-            <div id="location-display">
-                <!-- Current location will be populated by JavaScript -->
-            </div>
-        </div>
-    </div>
+    <!-- SugarCube will create its own DOM structure -->
+    <!-- Custom UI elements will be added via JavaScript after SugarCube initializes -->
 
     <!-- External Libraries -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -44,6 +26,7 @@
     <script src="./scripts/core/game-data.js"></script>
     <script src="./scripts/systems/inventory.js"></script>
     <script src="./scripts/systems/location.js"></script>
+    <script src="./scripts/ui/game-ui.js"></script>
     <script src="./scripts/telegram/telegram-integration.js"></script>
     <script src="./scripts/core/sugarcube-macros.js"></script>
 
