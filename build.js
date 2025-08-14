@@ -33,8 +33,8 @@ class GameBuilder {
             
             // Copy data files for runtime loading
             await this.copyDirectory(path.join(this.srcDir, 'data'), path.join(this.buildDir, 'src', 'data'));
-            await this.copyDirectory(path.join(this.srcDir, 'styles'), path.join(this.buildDir, 'src', 'styles'));
-            await this.copyDirectory(path.join(this.srcDir, 'scripts'), path.join(this.buildDir, 'src', 'scripts'));
+            await this.copyDirectory(path.join(this.srcDir, 'styles'), path.join(this.buildDir, 'styles'));
+            await this.copyDirectory(path.join(this.srcDir, 'scripts'), path.join(this.buildDir, 'scripts'));
             
             console.log('Modular build completed successfully!');
             console.log(`Output: ${outputPath}`);

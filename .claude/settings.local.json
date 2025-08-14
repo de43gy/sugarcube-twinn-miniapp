@@ -3,7 +3,8 @@
     "allow": [
       "Bash(npm run build:*)",
       "WebFetch(domain:sugarcube-twinn-miniapp.lewdmonkey.com)",
-      "Bash(touch:*)"
+      "Bash(touch:*)",
+      "Bash(npm run dev:*)"
     ],
     "deny": [],
     "ask": []

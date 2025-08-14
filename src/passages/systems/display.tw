@@ -1,14 +1,14 @@
 :: LocationDisplay {"tags":"widget"}
 <<widget "LocationDisplay">>
     <<set _location to $gameData.locations[$currentLocation]>>
-    <p class="text-lg">_location.description</p>
+    <p class="text-lg"><<print _location.description>></p>
 <</widget>>
 
 :: LocationContent {"tags":"widget"}
 <<widget "LocationContent">>
     <<set _locationId to $args[0]>>
     <<set _location to $gameData.locations[_locationId]>>
-    <p class="text-lg">_location.description</p>
+    <p class="text-lg"><<print _location.description>></p>
 <</widget>>
 
 :: LocationEvent {"tags":"widget"}
@@ -17,8 +17,8 @@
     <<set _location to $gameData.locations[$currentLocation]>>
     <<set _event to _location.events.find(e => e.id === _eventId)>>
     <<if _event>>
-        <p class="mt-4">_event.description</p>
-        <p class="mt-2">[[_event.action->_event.result]]</p>
+        <p class="mt-4"><<print _event.description>></p>
+        <p class="mt-2">[[<<print _event.action>>-><<print _event.result>>]]</p>
     <<endif>>
 <</widget>>
 
@@ -28,7 +28,7 @@
     <<for _connection range _location.connections>>
         <<if _connection.conditions.length === 0 or $gameData.validateConditions(_connection.conditions, $gameState)>>
             <<set _targetLocation to $gameData.locations[_connection.to]>>
-            <p class="mt-2">[[_connection.text->_targetLocation.displayName]]</p>
+            <p class="mt-2">[[<<print _connection.text>>-><<print _targetLocation.displayName>>]]</p>
         <<endif>>
     <<endfor>>
 <</widget>>
