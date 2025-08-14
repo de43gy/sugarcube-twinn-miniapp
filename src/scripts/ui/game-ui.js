@@ -16,35 +16,39 @@ window.GameUI = {
     },
     
     setupCustomUI() {
-        // Add game title if it doesn't exist
-        if (!document.querySelector('.game-title')) {
-            const title = document.createElement('h1');
-            title.className = 'game-title';
-            title.textContent = 'Таинственное поместье';
-            document.body.insertBefore(title, document.body.firstChild);
-        }
-        
-        // Create custom UI panel
-        const uiPanel = document.createElement('div');
-        uiPanel.id = 'game-ui';
-        uiPanel.innerHTML = `
-            <h2>Инвентарь</h2>
-            <div id="inventory-list">
-                <!-- Inventory items will be populated by JavaScript -->
-            </div>
-            <h2 style="margin-top: 1rem;">Локация</h2>
-            <div id="location-display">
-                <!-- Current location will be populated by JavaScript -->
-            </div>
-        `;
-        
-        // Insert after the story content
-        const story = document.getElementById('story');
-        if (story) {
-            story.parentNode.insertBefore(uiPanel, story.nextSibling);
-        } else {
-            document.body.appendChild(uiPanel);
-        }
+        // Wait a bit for SugarCube to fully initialize its DOM
+        setTimeout(() => {
+            // Add game title if it doesn't exist
+            if (!document.querySelector('.game-title')) {
+                const title = document.createElement('h1');
+                title.className = 'game-title';
+                title.textContent = 'Таинственное поместье';
+                document.body.insertBefore(title, document.body.firstChild);
+            }
+            
+            // Create custom UI panel if it doesn't exist
+            if (!document.getElementById('game-ui')) {
+                const uiPanel = document.createElement('div');
+                uiPanel.id = 'game-ui';
+                uiPanel.innerHTML = `
+                    <h2>Инвентарь</h2>
+                    <div id="inventory-list">
+                        <p>Пусто</p>
+                    </div>
+                    <h2 style="margin-top: 1rem;">Локация</h2>
+                    <div id="location-display">
+                        <p>Загрузка...</p>
+                    </div>
+                `;
+                
+                // Insert after the body content
+                document.body.appendChild(uiPanel);
+                
+                // Update displays immediately
+                this.updateInventoryDisplay();
+                this.updateLocationDisplay();
+            }
+        }, 500);
     },
     
     setupInventoryUpdater() {
