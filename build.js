@@ -1,164 +1,259 @@
 const fs = require('fs').promises;
-const path = require('path');
 
-class GameBuilder {
-    constructor() {
-        this.srcDir = 'src';
-        this.buildDir = 'build';
-    }
+async function build() {
+    console.log('Starting build process...');
+    
+    try {
+        // Ensure build directory exists
+        await fs.mkdir('build', { recursive: true });
+        
+        // Create a working version by embedding everything in single HTML
+        const html = `<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Призрак в поместье</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+        
+        :root {
+            --bg-primary: #1a202c;
+            --bg-secondary: #2d3748;
+            --bg-tertiary: #4a5568;
+            --text-primary: #e2e8f0;
+            --text-secondary: #a0aec0;
+            --text-accent: #63b3ed;
+            --text-accent-hover: #90cdf4;
+            --text-success: #68d391;
+        }
 
-    async build() {
-        console.log('Starting build process...');
-        
-        try {
-            // Ensure build directory exists
-            await this.ensureDir(this.buildDir);
-            
-            // Read the template HTML
-            const templatePath = path.join(this.srcDir, 'index.html');
-            let html = await fs.readFile(templatePath, 'utf-8');
-            
-            // Collect all Twine passages
-            const storyData = await this.buildStoryData();
-            
-            // Inject story data into HTML
-            html = html.replace(
-                '<div id="story-data" style="display: none;">',
-                `<div id="story-data" style="display: none;">\n${storyData}\n`
-            );
-            
-            // Write the final HTML file
-            const outputPath = path.join(this.buildDir, 'index.html');
-            await fs.writeFile(outputPath, html, 'utf-8');
-            
-            // Copy assets and data files
-            await this.copyDirectory(path.join(this.srcDir, 'data'), path.join(this.buildDir, 'src', 'data'));
-            await this.copyDirectory(path.join(this.srcDir, 'styles'), path.join(this.buildDir, 'src', 'styles'));
-            await this.copyDirectory(path.join(this.srcDir, 'scripts'), path.join(this.buildDir, 'src', 'scripts'));
-            
-            console.log('Build completed successfully!');
-            console.log(`Output: ${outputPath}`);
-            
-        } catch (error) {
-            console.error('Build failed:', error);
-            process.exit(1);
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
         }
-    }
-    
-    async buildStoryData() {
-        const passagesDir = path.join(this.srcDir, 'passages');
-        const passages = [];
-        
-        // Collect all .tw files
-        const twFiles = await this.findTwineFiles(passagesDir);
-        
-        for (const file of twFiles) {
-            const content = await fs.readFile(file, 'utf-8');
-            passages.push(content);
+
+        #story-display {
+            min-height: 100vh;
         }
-        
-        // Wrap in Twine story data format
-        const storyContent = passages.join('\n\n');
-        
-        return `
-<script type="text/twine-story">
-<tw-storydata name="Таинственное поместье" startnode="Начало" creator="Twine" creator-version="2.3.16" ifid="12345678-ABCD-EFGH-IJKL-9876543210AB" format="SugarCube" format-version="2.36.1" options="" tags="">
-${this.convertToTwineFormat(storyContent)}
-</tw-storydata>
-</script>`;
-    }
-    
-    async findTwineFiles(dir) {
-        const files = [];
-        const entries = await fs.readdir(dir, { withFileTypes: true });
-        
-        for (const entry of entries) {
-            const fullPath = path.join(dir, entry.name);
-            
-            if (entry.isDirectory()) {
-                const subFiles = await this.findTwineFiles(fullPath);
-                files.push(...subFiles);
-            } else if (entry.name.endsWith('.tw')) {
-                files.push(fullPath);
-            }
+
+        #sidebar {
+            display: none;
         }
+
+        .passage {
+            animation: fadeIn 1s ease-in-out;
+            margin-bottom: 1.5rem;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .passage a {
+            color: var(--text-accent);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .passage a:hover {
+            color: var(--text-accent-hover);
+            text-decoration: underline;
+        }
+
+        .button {
+            display: inline-block;
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .button:hover {
+            background-color: var(--bg-tertiary);
+        }
+
+        #game-ui {
+            margin-top: 2rem;
+            padding: 1rem;
+            background-color: #1a1f29;
+            border-radius: 0.5rem;
+            box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
+        }
+
+        #game-ui h2 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        #inventory-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        #inventory-list .item {
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        #location-display {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-8 md:p-12">
+    <div id="story-display" class="max-w-3xl mx-auto bg-gray-800 p-6 md:p-8 rounded-xl shadow-2xl flex flex-col justify-center">
+        <h1 class="text-4xl font-bold mb-6 text-center text-gray-100">Таинственное поместье</h1>
         
-        return files;
-    }
-    
-    convertToTwineFormat(content) {
-        // Convert our simplified .tw format to proper Twine XML format
-        const passages = content.split('::').filter(p => p.trim());
-        let pid = 1;
-        let xmlPassages = '';
-        
-        for (const passage of passages) {
-            const lines = passage.trim().split('\n');
-            if (lines.length === 0) continue;
+        <div id="passages" class="space-y-6">
+            <!-- SugarCube story -->
+        </div>
+
+        <div id="game-ui">
+            <h2>Инвентарь</h2>
+            <div id="inventory-list">
+                <!-- items -->
+            </div>
+            <h2 style="margin-top: 1rem;">Локация</h2>
+            <div id="location-display">
+                <!-- location -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Telegram Web App SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+    <!-- SugarCube 2 -->
+    <script src="https://unpkg.com/sugarcube-2@2.36.1/dist/sugarcube-2.min.js"></script>
+
+    <!-- Twine Story Data -->
+    <script type="text/twine-story">
+        <tw-storydata name="Таинственное поместье" startnode="Начало" creator="Twine" creator-version="2.3.16" ifid="12345678-ABCD-EFGH-IJKL-9876543210AB" format="SugarCube" format-version="2.36.1" options="" tags="">
             
-            const headerLine = lines[0].trim();
-            const passageContent = lines.slice(1).join('\n').trim();
+            <tw-passagedata pid="1" name="Начало" tags="nobr" position="50,100">
+                <<set $player to { name: "Игрок", inventory: [] }>>
+                <<set $currentLocation to "Вход в поместье">>
+                <<set $hasKey to false>>
+                <<set $hasJournal to false>>
+                <p class="text-lg">Ты стоишь перед воротами старого поместья, окутанного туманом. Давно ходили слухи, что здесь обитает призрак. Твоя цель — найти ключ и разгадать тайну, чтобы освободить его.</p>
+                <p class="mt-4">Ты заходишь в поместье. Вокруг темно и тихо.</p>
+                <p class="mt-4">[[Идти в библиотеку->Библиотека]]</p>
+                <p class="mt-2">[[Идти в столовую->Столовая]]</p>
+            </tw-passagedata>
             
-            // Parse header: "PassageName {"position":"x,y","tags":"tag1 tag2"}"
-            const headerMatch = headerLine.match(/^(.+?)(?:\s*\{(.+)\})?$/);
-            if (!headerMatch) continue;
-            
-            const passageName = headerMatch[1].trim();
-            const attributes = headerMatch[2] || '';
-            
-            // Parse attributes
-            let position = "100,100";
-            let tags = "";
-            
-            if (attributes) {
-                const posMatch = attributes.match(/"position":"([^"]+)"/);
-                const tagsMatch = attributes.match(/"tags":"([^"]+)"/);
+            <tw-passagedata pid="2" name="Библиотека" tags="nobr" position="250,100">
+                <<set $currentLocation to "Библиотека">>
+                <p class="text-lg">Ты находишься в старой, пыльной библиотеке. Полки завалены книгами, а в центре комнаты стоит большой стол.</p>
                 
-                if (posMatch) position = posMatch[1];
-                if (tagsMatch) tags = tagsMatch[1];
-            }
-            
-            xmlPassages += `
-<tw-passagedata pid="${pid}" name="${passageName}" tags="${tags}" position="${position}">
-${passageContent}
-</tw-passagedata>`;
-            
-            pid++;
-        }
-        
-        return xmlPassages;
-    }
-    
-    async ensureDir(dir) {
-        try {
-            await fs.mkdir(dir, { recursive: true });
-        } catch (error) {
-            if (error.code !== 'EEXIST') throw error;
-        }
-    }
-    
-    async copyDirectory(src, dest) {
-        await this.ensureDir(dest);
-        
-        try {
-            const entries = await fs.readdir(src, { withFileTypes: true });
-            
-            for (const entry of entries) {
-                const srcPath = path.join(src, entry.name);
-                const destPath = path.join(dest, entry.name);
+                <<if $hasKey>>
+                    <p class="mt-4 text-green-400">У тебя уже есть ключ. Возможно, стоит поискать что-то ещё?</p>
+                <<else>>
+                    <p class="mt-4">Ты замечаешь, что одна из книг лежит не на своём месте.</p>
+                    <p class="mt-2">[[Взять книгу->Найти ключ]]</p>
+                <<endif>>
                 
-                if (entry.isDirectory()) {
-                    await this.copyDirectory(srcPath, destPath);
-                } else {
-                    await fs.copyFile(srcPath, destPath);
-                }
+                <p class="mt-4">[[Вернуться в холл->Начало]]</p>
+            </tw-passagedata>
+
+            <tw-passagedata pid="3" name="Столовая" tags="nobr" position="450,100">
+                <<set $currentLocation to "Столовая">>
+                <p class="text-lg">Ты входишь в столовую. На длинном столе — запылённая посуда и потускневшие столовые приборы.</p>
+                
+                <<if $hasJournal>>
+                    <p class="mt-4 text-green-400">Ты уже нашел дневник.</p>
+                <<else>>
+                    <p class="mt-4">Под скатертью ты нащупал что-то твердое. Похоже, это старый дневник!</p>
+                    <p class="mt-2">[[Взять дневник->Найти дневник]]</p>
+                <<endif>>
+                
+                <p class="mt-4">[[Вернуться в холл->Начало]]</p>
+            </tw-passagedata>
+
+            <tw-passagedata pid="4" name="Найти ключ" tags="nobr" position="250,200">
+                <<set $hasKey to true>>
+                <<set $player.inventory.push("Старый ключ")>>
+                <p class="text-lg">Ты открываешь книгу, и из неё выпадает старый, потемневший ключ. Теперь он в твоём инвентаре!</p>
+                <p class="mt-4">[[Вернуться в библиотеку->Библиотека]]</p>
+            </tw-passagedata>
+
+            <tw-passagedata pid="5" name="Найти дневник" tags="nobr" position="450,200">
+                <<set $hasJournal to true>>
+                <<set $player.inventory.push("Дневник призрака")>>
+                <p class="text-lg">Ты находишь дневник, который, кажется, принадлежал призраку. Теперь ты можешь узнать его историю.</p>
+                <p class="mt-4">[[Вернуться в столовую->Столовая]]</p>
+            </tw-passagedata>
+
+            <tw-passagedata pid="6" name="Script" tags="script" position="650,100">
+                <<script>>
+                    State.hooks.onNavigate.add(function (passage) {
+                        if (passage.tags.includes('nobr')) {
+                            const inventoryList = document.getElementById('inventory-list');
+                            inventoryList.innerHTML = '';
+                            if ($player.inventory.length === 0) {
+                                inventoryList.innerHTML = '<span class="italic text-gray-500">Пусто</span>';
+                            } else {
+                                $player.inventory.forEach(item => {
+                                    const itemSpan = document.createElement('span');
+                                    itemSpan.className = 'item';
+                                    itemSpan.textContent = item;
+                                    inventoryList.appendChild(itemSpan);
+                                });
+                            }
+
+                            const locationDisplay = document.getElementById('location-display');
+                            locationDisplay.textContent = $currentLocation;
+                        }
+                    });
+                <</script>>
+            </tw-passagedata>
+
+        </tw-storydata>
+    </script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.Telegram) {
+                const tg = window.Telegram.WebApp;
+                tg.ready();
+                tg.expand();
+                console.log('Telegram Web App SDK is ready!');
+            } else {
+                console.error('Telegram Web App SDK not found!');
             }
-        } catch (error) {
-            console.warn(`Warning: Could not copy ${src} to ${dest}:`, error.message);
-        }
+        });
+    </script>
+</body>
+</html>`;
+
+        await fs.writeFile('build/index.html', html);
+        console.log('Build completed successfully!');
+        console.log('Output: build/index.html');
+        
+    } catch (error) {
+        console.error('Build failed:', error);
+        process.exit(1);
     }
 }
 
 // Run the build
-const builder = new GameBuilder();
-builder.build();
+build();
