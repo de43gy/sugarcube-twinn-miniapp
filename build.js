@@ -121,11 +121,21 @@ async function build() {
     </style>
 </head>
 <body class="p-4 sm:p-8 md:p-12">
-    <div id="story-display" class="max-w-3xl mx-auto bg-gray-800 p-6 md:p-8 rounded-xl shadow-2xl flex flex-col justify-center">
+    <div id="init-screen" style="display:none;">Loading...</div>
+    <div id="ui-overlay" class="ui-close"></div>
+    <div id="ui-dialog" tabindex="0" role="dialog" aria-labelledby="ui-dialog-title">
+        <div id="ui-dialog-titlebar">
+            <h1 id="ui-dialog-title"></h1>
+            <button id="ui-dialog-close" class="ui-close" tabindex="0" aria-label="Close"></button>
+        </div>
+        <div id="ui-dialog-body"></div>
+    </div>
+    
+    <div id="story" role="main" class="max-w-3xl mx-auto bg-gray-800 p-6 md:p-8 rounded-xl shadow-2xl flex flex-col justify-center">
         <h1 class="text-4xl font-bold mb-6 text-center text-gray-100">Таинственное поместье</h1>
         
         <div id="passages" class="space-y-6">
-            <!-- SugarCube story -->
+            <!-- SugarCube story content will appear here -->
         </div>
 
         <div id="game-ui">
@@ -232,14 +242,28 @@ async function build() {
     
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            if (window.Telegram) {
+            console.log('DOM loaded');
+            console.log('SugarCube available:', typeof window.SugarCube);
+            console.log('Story data:', document.querySelector('script[type="text/twine-story"]'));
+            
+            if (window.Telegram && window.Telegram.WebApp) {
                 const tg = window.Telegram.WebApp;
                 tg.ready();
                 tg.expand();
                 console.log('Telegram Web App SDK is ready!');
             } else {
-                console.error('Telegram Web App SDK not found!');
+                console.log('Telegram Web App SDK not found - running in browser mode');
             }
+        });
+        
+        // Force SugarCube to start if it hasn't already
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                if (window.SugarCube && !window.SugarCube.State.started) {
+                    console.log('Manually starting SugarCube...');
+                    window.SugarCube.Engine.start();
+                }
+            }, 1000);
         });
     </script>
 </body>
