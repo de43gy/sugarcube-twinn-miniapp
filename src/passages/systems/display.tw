@@ -8,7 +8,7 @@
             <p class="text-lg">Описание недоступно</p>
         <<endif>>
     <<else>>
-        <p class="text-lg">Загрузка локации...</p>
+        <p class="text-lg">Загрузка локации... (Debug: $currentLocation=<<print $currentLocation>>, locations=<<print Object.keys($gameData ? $gameData.locations || {} : {})>>)</p>
     <<endif>>
 <</widget>>
 

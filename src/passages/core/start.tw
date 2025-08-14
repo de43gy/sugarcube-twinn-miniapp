@@ -2,5 +2,4 @@
 <<include "InitializeGame">>
 <<set $currentLocation to "entrance">>
 <<display "LocationDisplay">>
-
-<<include "NavigationLinks">>
+<<display "NavigationLinks">>

@@ -28,7 +28,7 @@ console.log('StoryInit running...');
             console.log(`Waiting for GameData to load... (attempt ${attempts}/${maxAttempts})`);
             setTimeout(waitForGameData, 100);
         } else {
-            console.error('Failed to load GameData after maximum attempts');
+            console.error('Failed to load GameData after maximum attempts, using fallback');
             // Set fallback empty data
             State.variables.gameData = {
                 locations: {},
@@ -41,5 +41,21 @@ console.log('StoryInit running...');
     };
     
     waitForGameData();
+    
+    // Force update after initialization
+    setTimeout(() => {
+        console.log('Forcing UI update after StoryInit');
+        if (State.variables.currentLocation) {
+            try {
+                Wikifier.wikifyEval('<<display "LocationDisplay">>');
+                Wikifier.wikifyEval('<<display "NavigationLinks">>');
+                console.log('Forced UI update completed');
+            } catch (error) {
+                console.error('Error during forced UI update:', error);
+            }
+        } else {
+            console.log('No currentLocation set, skipping forced UI update');
+        }
+    }, 500);
 })();
 <</script>>
