@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Призрак в поместье</title>
+    <title>Таинственное поместье</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -14,9 +14,17 @@
     <link rel="stylesheet" href="./styles/components/passages.css">
     <link rel="stylesheet" href="./styles/components/ui.css">
 </head>
-<body class="p-4 sm:p-8 md:p-12">
-    <!-- SugarCube will create its own DOM structure -->
-    <!-- Custom UI elements will be added via JavaScript after SugarCube initializes -->
+<body class="bg-gray-900 text-white p-4">
+    <!-- Story content will be injected here by build system -->
+    <div id="passages" class="passages-container"></div>
+    
+    <!-- Custom Game UI -->
+    <div id="game-ui">
+        <h2>Инвентарь</h2>
+        <div id="inventory-list">Пусто</div>
+        <h2 style="margin-top: 1rem;">Локация</h2>
+        <div id="location-display">Загрузка...</div>
+    </div>
 
     <!-- External Libraries -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -32,23 +40,35 @@
 
     <!-- Initialize Game Data -->
     <script>
-        // Load game data and then start the game
+        // Load game data and let SugarCube handle initialization
         document.addEventListener('DOMContentLoaded', async () => {
-            const dataLoaded = await window.GameData.loadData();
-            if (dataLoaded) {
-                console.log('Game data loaded, starting story...');
-                // Wait for the SugarCube engine to be ready, then start the game at the correct passage
-                $(document).on(':storyready', function() {
-                    // Use Engine.play() to navigate to the actual start passage
-                    Engine.play('Начало');
-                });
-            } else {
-                console.error('Failed to load game data');
-                const loadingScreen = document.getElementById('loading-screen');
-                if(loadingScreen) {
-                    loadingScreen.innerHTML = '<p style="color: red;">Ошибка: Не удалось загрузить данные игры.</p>';
+            console.log('DOM loaded, initializing game...');
+            
+            try {
+                const dataLoaded = await window.GameData.loadData();
+                if (dataLoaded) {
+                    console.log('Game data loaded successfully');
+                    console.log('Available locations:', Object.keys(window.GameData.locations));
+                } else {
+                    console.error('Failed to load game data');
                 }
+            } catch (error) {
+                console.error('Error loading game data:', error);
             }
+            
+            // Log when SugarCube is ready
+            $(document).on(':storyready', function() {
+                console.log('SugarCube story is ready!');
+            });
+            
+            // Log passage transitions
+            $(document).on(':passagestart', function(event) {
+                console.log('Starting passage:', event.passage.title);
+            });
+            
+            $(document).on(':passageend', function(event) {
+                console.log('Finished passage:', event.passage.title);
+            });
         });
     </script>
 

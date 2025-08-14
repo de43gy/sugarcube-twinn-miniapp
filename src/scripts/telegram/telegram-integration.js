@@ -4,20 +4,27 @@ window.TelegramIntegration = {
     isReady: false,
     
     init() {
-        if (window.Telegram && window.Telegram.WebApp) {
-            this.tg = window.Telegram.WebApp;
-            this.tg.ready();
-            this.tg.expand();
-            this.isReady = true;
-            
-            console.log('Telegram Web App SDK is ready!');
-            
-            // Set up event listeners
-            this.setupEventListeners();
-            
-            return true;
-        } else {
-            console.error('Telegram Web App SDK not found!');
+        try {
+            if (window.Telegram && window.Telegram.WebApp) {
+                this.tg = window.Telegram.WebApp;
+                this.tg.ready();
+                this.tg.expand();
+                this.isReady = true;
+                
+                console.log('Telegram Web App SDK is ready!');
+                console.log('Telegram WebApp data:', this.tg.initDataUnsafe);
+                
+                // Set up event listeners
+                this.setupEventListeners();
+                
+                return true;
+            } else {
+                console.error('Telegram Web App SDK not found! Running in fallback mode.');
+                console.log('Available window properties:', Object.keys(window));
+                return false;
+            }
+        } catch (error) {
+            console.error('Error initializing Telegram SDK:', error);
             return false;
         }
     },

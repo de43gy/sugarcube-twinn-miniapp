@@ -1,10 +1,17 @@
 :: StoryInit
 <<script>>
+console.log('StoryInit running...');
+
 // Wait for GameData to be loaded before proceeding
 (function() {
+    let attempts = 0;
+    const maxAttempts = 50; // 5 seconds max wait
+    
     const waitForGameData = function() {
+        attempts++;
+        
         if (window.GameData && window.GameData.locations && Object.keys(window.GameData.locations).length > 0) {
-            console.log('GameData loaded, setting up SugarCube variables...');
+            console.log('GameData loaded successfully, setting up SugarCube variables...');
             
             // Make game data available to SugarCube
             State.variables.gameData = {
@@ -16,9 +23,20 @@
             };
             
             console.log('$gameData initialized:', State.variables.gameData);
-        } else {
-            console.log('Waiting for GameData to load...');
+            console.log('Available locations:', Object.keys(State.variables.gameData.locations));
+        } else if (attempts < maxAttempts) {
+            console.log(`Waiting for GameData to load... (attempt ${attempts}/${maxAttempts})`);
             setTimeout(waitForGameData, 100);
+        } else {
+            console.error('Failed to load GameData after maximum attempts');
+            // Set fallback empty data
+            State.variables.gameData = {
+                locations: {},
+                items: {},
+                characters: {},
+                quests: {},
+                validateConditions: () => true
+            };
         }
     };
     
