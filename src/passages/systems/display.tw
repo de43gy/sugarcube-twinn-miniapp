@@ -26,7 +26,7 @@
 <<widget "NavigationLinks">>
     <<set _location to $gameData.locations[$currentLocation]>>
     <<for _connection range _location.connections>>
-        <<if _connection.conditions.length === 0 or $gameState.satisfiesConditions(_connection.conditions)>>
+        <<if _connection.conditions.length === 0 or $gameData.validateConditions(_connection.conditions, $gameState)>>
             <<set _targetLocation to $gameData.locations[_connection.to]>>
             <p class="mt-2">[[_connection.text->_targetLocation.displayName]]</p>
         <<endif>>
