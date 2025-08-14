@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Призрак в поместье</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Modular Styles -->
+    <link rel="stylesheet" href="./styles/themes/dark-theme.css">
+    <link rel="stylesheet" href="./styles/components/layout.css">
+    <link rel="stylesheet" href="./styles/components/passages.css">
+    <link rel="stylesheet" href="./styles/components/ui.css">
+</head>
+<body class="p-4 sm:p-8 md:p-12">
+    <!-- Main Container -->
+    <div id="story-display" class="main-container">
+        <h1 class="game-title">Таинственное поместье</h1>
+        
+        <div id="passages" class="passages-container">
+            <!-- SugarCube story content will be rendered here -->
+        </div>
+
+        <!-- Game UI -->
+        <div id="game-ui">
+            <h2>Инвентарь</h2>
+            <div id="inventory-list">
+                <!-- Inventory items will be populated by JavaScript -->
+            </div>
+            <h2 style="margin-top: 1rem;">Локация</h2>
+            <div id="location-display">
+                <!-- Current location will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- External Libraries -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://unpkg.com/sugarcube-2@2.36.1/dist/sugarcube-2.min.js"></script>
+
+    <!-- Game Systems -->
+    <script src="./scripts/core/game-data.js"></script>
+    <script src="./scripts/systems/inventory.js"></script>
+    <script src="./scripts/systems/location.js"></script>
+    <script src="./scripts/telegram/telegram-integration.js"></script>
+    <script src="./scripts/core/sugarcube-macros.js"></script>
+
+    <!-- Initialize Game Data -->
+    <script>
+        // Load game data before SugarCube starts
+        document.addEventListener('DOMContentLoaded', async () => {
+            const dataLoaded = await window.GameData.loadData();
+            if (dataLoaded) {
+                console.log('Game data loaded, ready to play!');
+            } else {
+                console.error('Failed to load game data');
+            }
+        });
+    </script>
+
+    <!-- Story Data -->
+    <div id="story-data" style="display: none;">
+        <!-- Story content will be injected here by build system -->
+    </div>
+</body>
+</html>

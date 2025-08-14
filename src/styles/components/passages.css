@@ -1,0 +1,29 @@
+.passage {
+    animation: fadeIn 1s ease-in-out;
+    margin-bottom: 1.5rem;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.passage a {
+    color: var(--text-accent);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.passage a:hover {
+    color: var(--text-accent-hover);
+    text-decoration: underline;
+}
+
+.passage p {
+    margin-bottom: 1rem;
+}
+
+.passage p:last-child {
+    margin-bottom: 0;
+}

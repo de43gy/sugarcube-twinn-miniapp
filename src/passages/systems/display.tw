@@ -1,0 +1,34 @@
+:: LocationDisplay [widget]
+<<widget "LocationDisplay">>
+    <<set _location to $gameData.locations[$currentLocation]>>
+    <p class="text-lg">_location.description</p>
+<</widget>>
+
+:: LocationContent [widget]
+<<widget "LocationContent">>
+    <<set _locationId to $args[0]>>
+    <<set _location to $gameData.locations[_locationId]>>
+    <p class="text-lg">_location.description</p>
+<</widget>>
+
+:: LocationEvent [widget]
+<<widget "LocationEvent">>
+    <<set _eventId to $args[0]>>
+    <<set _location to $gameData.locations[$currentLocation]>>
+    <<set _event to _location.events.find(e => e.id === _eventId)>>
+    <<if _event>>
+        <p class="mt-4">_event.description</p>
+        <p class="mt-2">[[_event.action->_event.result]]</p>
+    <<endif>>
+<</widget>>
+
+:: NavigationLinks [widget]  
+<<widget "NavigationLinks">>
+    <<set _location to $gameData.locations[$currentLocation]>>
+    <<for _connection range _location.connections>>
+        <<if _connection.conditions.length === 0 or $gameState.satisfiesConditions(_connection.conditions)>>
+            <<set _targetLocation to $gameData.locations[_connection.to]>>
+            <p class="mt-2">[[_connection.text->_targetLocation.displayName]]</p>
+        <<endif>>
+    <<endfor>>
+<</widget>>

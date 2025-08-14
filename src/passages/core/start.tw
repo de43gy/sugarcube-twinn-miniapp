@@ -1,0 +1,6 @@
+:: Начало {"position":"50,100","tags":"nobr"}
+<<include "InitializeGame">>
+<<set $currentLocation to "entrance">>
+<<display "LocationDisplay">>
+
+<<include "NavigationLinks">>

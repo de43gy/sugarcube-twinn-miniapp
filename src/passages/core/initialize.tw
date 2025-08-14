@@ -1,0 +1,18 @@
+:: InitializeGame
+<<set $player to { 
+    name: "Игрок", 
+    inventory: [],
+    stats: {
+        health: 100,
+        stamina: 100,
+        knowledge: 0
+    }
+}>>
+<<set $gameState to {
+    hasKey: false,
+    hasJournal: false,
+    currentLocation: "entrance",
+    visitedLocations: ["entrance"],
+    discoveredSecrets: [],
+    relationships: {}
+}>>

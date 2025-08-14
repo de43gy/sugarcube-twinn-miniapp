@@ -1,0 +1,11 @@
+:: Библиотека {"position":"250,100","tags":"location"}
+<<set $currentLocation to "library">>
+<<display "LocationContent" "library">>
+
+<<if not $gameState.hasKey>>
+    <<if $gameData.locations.library.events.length > 0>>
+        <<display "LocationEvent" "find_key">>
+    <<endif>>
+<<else>>
+    <p class="mt-4 text-green-400">У тебя уже есть ключ. Возможно, стоит поискать что-то ещё?</p>
+<<endif>>

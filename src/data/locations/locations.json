@@ -1,0 +1,73 @@
+{
+  "entrance": {
+    "id": "entrance",
+    "name": "Вход в поместье",
+    "displayName": "Вход в поместье",
+    "description": "Ты стоишь перед воротами старого поместья, окутанного туманом. Давно ходили слухи, что здесь обитает призрак. Твоя цель — найти ключ и разгадать тайну, чтобы освободить его.",
+    "connections": [
+      {
+        "to": "library",
+        "text": "Идти в библиотеку",
+        "conditions": []
+      },
+      {
+        "to": "dining_room",
+        "text": "Идти в столовую",
+        "conditions": []
+      }
+    ],
+    "events": [],
+    "atmosphere": "dark",
+    "discovered": true
+  },
+  "library": {
+    "id": "library",
+    "name": "Библиотека",
+    "displayName": "Библиотека",
+    "description": "Ты находишься в старой, пыльной библиотеке. Полки завалены книгами, а в центре комнаты стоит большой стол.",
+    "connections": [
+      {
+        "to": "entrance",
+        "text": "Вернуться в холл",
+        "conditions": []
+      }
+    ],
+    "events": [
+      {
+        "id": "find_key",
+        "trigger": "interaction",
+        "description": "Ты замечаешь, что одна из книг лежит не на своём месте.",
+        "action": "Взять книгу",
+        "conditions": [{"type": "not_has_item", "item": "old_key"}],
+        "result": "find_key_event"
+      }
+    ],
+    "atmosphere": "dusty",
+    "discovered": false
+  },
+  "dining_room": {
+    "id": "dining_room",
+    "name": "Столовая",
+    "displayName": "Столовая",
+    "description": "Ты входишь в столовую. На длинном столе — запылённая посуда и потускневшие столовые приборы.",
+    "connections": [
+      {
+        "to": "entrance",
+        "text": "Вернуться в холл",
+        "conditions": []
+      }
+    ],
+    "events": [
+      {
+        "id": "find_journal",
+        "trigger": "interaction",
+        "description": "Под скатертью ты нащупал что-то твердое. Похоже, это старый дневник!",
+        "action": "Взять дневник",
+        "conditions": [{"type": "not_has_item", "item": "ghost_journal"}],
+        "result": "find_journal_event"
+      }
+    ],
+    "atmosphere": "eerie",
+    "discovered": false
+  }
+}

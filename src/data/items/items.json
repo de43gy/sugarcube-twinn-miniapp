@@ -1,0 +1,40 @@
+{
+  "old_key": {
+    "id": "old_key",
+    "name": "Старый ключ",
+    "displayName": "Старый ключ",
+    "description": "Старый, потемневший ключ. Возможно, он откроет что-то важное в поместье.",
+    "type": "key_item",
+    "rarity": "common",
+    "value": 0,
+    "stackable": false,
+    "usable": true,
+    "consumable": false,
+    "stats": {},
+    "effects": [],
+    "requirements": [],
+    "tags": ["key", "mystery", "quest_item"]
+  },
+  "ghost_journal": {
+    "id": "ghost_journal",
+    "name": "Дневник призрака",
+    "displayName": "Дневник призрака", 
+    "description": "Старый дневник, который, кажется, принадлежал призраку. Из него можно узнать его историю.",
+    "type": "book",
+    "rarity": "uncommon",
+    "value": 0,
+    "stackable": false,
+    "usable": true,
+    "consumable": false,
+    "stats": {},
+    "effects": [
+      {
+        "type": "knowledge",
+        "value": "ghost_story",
+        "description": "Раскрывает историю призрака"
+      }
+    ],
+    "requirements": [],
+    "tags": ["book", "lore", "ghost", "quest_item"]
+  }
+}

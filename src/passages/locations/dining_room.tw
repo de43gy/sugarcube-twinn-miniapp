@@ -1,0 +1,11 @@
+:: Столовая {"position":"450,100","tags":"location"}
+<<set $currentLocation to "dining_room">>
+<<display "LocationContent" "dining_room">>
+
+<<if not $gameState.hasJournal>>
+    <<if $gameData.locations.dining_room.events.length > 0>>
+        <<display "LocationEvent" "find_journal">>
+    <<endif>>
+<<else>>
+    <p class="mt-4 text-green-400">Ты уже нашел дневник.</p>
+<<endif>>

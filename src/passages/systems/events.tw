@@ -1,0 +1,11 @@
+:: Найти ключ {"position":"250,200","tags":"event"}
+<<set $gameState.hasKey to true>>
+<<addToInventory "old_key">>
+<p class="text-lg">Ты открываешь книгу, и из неё выпадает старый, потемневший ключ. Теперь он в твоём инвентаре!</p>
+<p class="mt-4">[[Вернуться в библиотеку->Библиотека]]</p>
+
+:: Найти дневник {"position":"450,200","tags":"event"}
+<<set $gameState.hasJournal to true>>
+<<addToInventory "ghost_journal">>
+<p class="text-lg">Ты находишь дневник, который, кажется, принадлежал призраку. Теперь ты можешь узнать его историю.</p>
+<p class="mt-4">[[Вернуться в столовую->Столовая]]</p>
