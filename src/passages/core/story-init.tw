@@ -1,0 +1,4 @@
+:: StoryInit {"position":"-50,100","tags":"nobr"}
+<div id="loading-screen" style="text-align: center; font-size: 1.5rem;">
+    <p>Загрузка игры...</p>
+</div>

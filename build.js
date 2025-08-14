@@ -66,7 +66,7 @@ class GameBuilder {
         
         return `
 <script type="text/twine-story">
-<tw-storydata name="Таинственное поместье" startnode="Начало" creator="Twine" creator-version="2.3.16" ifid="12345678-ABCD-EFGH-IJKL-9876543210AB" format="SugarCube" format-version="2.36.1" options="" tags="">
+<tw-storydata name="Таинственное поместье" startnode="StoryInit" creator="Twine" creator-version="2.3.16" ifid="12345678-ABCD-EFGH-IJKL-9876543210AB" format="SugarCube" format-version="2.36.1" options="" tags="">
 ${xmlPassages}
 </tw-storydata>
 </script>`;

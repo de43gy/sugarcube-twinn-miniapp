@@ -49,13 +49,22 @@
 
     <!-- Initialize Game Data -->
     <script>
-        // Load game data before SugarCube starts
+        // Load game data and then start the game
         document.addEventListener('DOMContentLoaded', async () => {
             const dataLoaded = await window.GameData.loadData();
             if (dataLoaded) {
-                console.log('Game data loaded, ready to play!');
+                console.log('Game data loaded, starting story...');
+                // Wait for the SugarCube engine to be ready, then start the game at the correct passage
+                $(document).on(':storyready', function() {
+                    // Use Engine.play() to navigate to the actual start passage
+                    Engine.play('Начало');
+                });
             } else {
                 console.error('Failed to load game data');
+                const loadingScreen = document.getElementById('loading-screen');
+                if(loadingScreen) {
+                    loadingScreen.innerHTML = '<p style="color: red;">Ошибка: Не удалось загрузить данные игры.</p>';
+                }
             }
         });
     </script>
