@@ -4,8 +4,9 @@
   "description": "A Telegram Mini App using SugarCube 2 and Twine",
   "main": "build/index.html",
   "scripts": {
-    "build": "node build.js",
-    "dev": "node build.js && cd build && python -m http.server 8000",
+    "build": "node build-simple.js",
+    "build-modular": "node build.js",
+    "dev": "node build-simple.js && cd build && python -m http.server 8000",
     "clean": "rm -rf build/*"
   },
   "keywords": ["telegram", "miniapp", "twine", "sugarcube", "interactive-fiction"],
