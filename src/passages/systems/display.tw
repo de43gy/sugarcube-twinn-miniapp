@@ -1,17 +1,17 @@
-:: LocationDisplay [widget]
+:: LocationDisplay {"tags":"widget"}
 <<widget "LocationDisplay">>
     <<set _location to $gameData.locations[$currentLocation]>>
     <p class="text-lg">_location.description</p>
 <</widget>>
 
-:: LocationContent [widget]
+:: LocationContent {"tags":"widget"}
 <<widget "LocationContent">>
     <<set _locationId to $args[0]>>
     <<set _location to $gameData.locations[_locationId]>>
     <p class="text-lg">_location.description</p>
 <</widget>>
 
-:: LocationEvent [widget]
+:: LocationEvent {"tags":"widget"}
 <<widget "LocationEvent">>
     <<set _eventId to $args[0]>>
     <<set _location to $gameData.locations[$currentLocation]>>
@@ -22,7 +22,7 @@
     <<endif>>
 <</widget>>
 
-:: NavigationLinks [widget]  
+:: NavigationLinks {"tags":"widget"}  
 <<widget "NavigationLinks">>
     <<set _location to $gameData.locations[$currentLocation]>>
     <<for _connection range _location.connections>>

@@ -35,8 +35,21 @@ Macro.add('hasItem', {
 
 // Initialize game data when SugarCube is ready
 $(document).on(':storyready', function() {
-    // Make game data available to SugarCube
-    State.variables.gameData = window.GameData;
+    console.log('SugarCube story ready, setting up game data...');
+    
+    // Make game data available to SugarCube with the actual loaded data
+    if (window.GameData) {
+        State.variables.gameData = {
+            locations: window.GameData.locations,
+            items: window.GameData.items,
+            characters: window.GameData.characters || {},
+            quests: window.GameData.quests || {},
+            validateConditions: window.GameData.validateConditions.bind(window.GameData)
+        };
+        console.log('Game data set in SugarCube:', State.variables.gameData);
+    } else {
+        console.error('GameData not available!');
+    }
     
     // Initialize systems
     if (window.InventorySystem) {
