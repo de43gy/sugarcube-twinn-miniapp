@@ -65,10 +65,11 @@ class GameBuilder {
         const xmlPassages = this.convertToTwineFormat(allPassageContent);
         
         return `
-<tw-storydata name="Таинственное поместье" startnode="1" creator="Twine" creator-version="2.3.16" ifid="12345678-ABCD-EFGH-IJKL-9876543210AB" format="SugarCube" format-version="2.36.1" options="" tags="" zoom="1" hidden>
+<tw-storydata name="Таинственное поместье" startnode="1" creator="Twine" creator-version="2.3.16" ifid="A1B2C3D4-E5F6-7890-ABCD-EFGHIJKLMNOP" format="SugarCube" format-version="2.36.1" options="" zoom="1" hidden>
 ${xmlPassages}
 </tw-storydata>
-<script role="script" id="twine-user-script" type="text/twine-javascript"></script>`;
+<script role="script" id="twine-user-script" type="text/twine-javascript"></script>
+<style role="stylesheet" id="twine-user-stylesheet" type="text/twine-css"></style>`;
     }
     
     async findTwineFiles(dir) {

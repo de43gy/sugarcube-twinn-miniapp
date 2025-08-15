@@ -3,3 +3,4 @@
 <<set $currentLocation to "entrance">>
 <<display "LocationDisplay">>
 <<display "NavigationLinks">>
+<p>Debug: Current location set to <<print $currentLocation>></p>

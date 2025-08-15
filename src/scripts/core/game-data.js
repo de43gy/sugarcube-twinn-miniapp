@@ -10,10 +10,12 @@ window.GameData = {
             // Load locations
             const locationsResponse = await fetch('./src/data/locations/locations.json');
             this.locations = await locationsResponse.json();
+            console.log('Locations loaded:', Object.keys(this.locations)); // Should log ['entrance', 'dining_room', 'library']
             
             // Load items  
             const itemsResponse = await fetch('./src/data/items/items.json');
             this.items = await itemsResponse.json();
+            console.log('Items loaded:', Object.keys(this.items));
             
             console.log('Game data loaded successfully');
             return true;
